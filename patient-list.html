@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Voice Agent - Patient List</title>
+    <link rel="stylesheet" href="css/patient-list.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <h2 id="userName">Loading...</h2>
+                        <p id="userRole">Loading...</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">← Logout</button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="🔍 Search patients..." id="searchInput">
+            </div>
+
+            <div class="patient-list" id="patientList">
+                <!-- Patient cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Right Content Area -->
+        <div class="content-area">
+            <div class="content-header">
+                <h1>Patient Claims Dashboard</h1>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📋</div>
+                <h2>Select a Patient</h2>
+                <p>Choose a patient from the list to view their claims and details</p>
+            </div>
+
+            <!-- Patient Detail View -->
+            <div class="patient-detail hidden" id="patientDetail">
+                <!-- Patient Information Card -->
+                <div class="detail-card">
+                    <div class="card-title">👤 Patient Information</div>
+                    <div class="detail-grid" id="patientInfo">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Claim Details Card -->
+                <div class="detail-card">
+                    <div class="card-title">📋 Current Claim Details</div>
+                    <div id="claimDetails">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="launchVoiceAgent()">
+                            🎙️ Launch Voice Agent
+                        </button>
+                        <button class="btn btn-secondary" onclick="viewHistory()">
+                            📊 View History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/patient-list.js"></script>
+</body>
+</html>
