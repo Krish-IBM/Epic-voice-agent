@@ -76,6 +76,15 @@ body {
     50% { opacity: 0.5; }
 }
 
+.workflow-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E2E8F0;
+    margin-bottom: 20px;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

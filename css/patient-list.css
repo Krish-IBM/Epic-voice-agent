@@ -194,11 +194,39 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 24px;
 }
 
 .content-header h1 {
     font-size: 24px;
     color: #0F172A;
+}
+
+.content-header .metrics {
+    display: flex;
+    gap: 12px;
+}
+
+.content-header .metric-card {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #FFFFFF;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 100px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content-header .metric-value {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.content-header .metric-label {
+    font-size: 11px;
+    opacity: 0.9;
+    line-height: 1.2;
 }
 
 .empty-state {
