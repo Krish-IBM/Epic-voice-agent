@@ -1,0 +1,36 @@
+Conversation 1: Patient asking about balance
+User: Hi, I got a bill in the mail and I want to understand why it’s so high.
+Agent: I can help with that. May I have your full name?
+User: Sarah Thompson.
+Agent: Thank you. What is your date of birth?
+User: April 9th, 1981.
+Agent: Thank you. I found your account. Which bill are you calling about?
+User: The one for 423 dollars.
+Agent: That balance is because your deductible wasn’t met for the visit on January 12th.
+User: Oh, okay. Does insurance cover any of it?
+Agent: Yes. Insurance covered 80 percent after your deductible.
+User: Alright, thanks.
+Agent: You’re welcome. Anything else I can help with?
+Conversation 2: Patient asking claim status
+User: Hi, I want to check on a claim.
+Agent: Certainly. May I have your name?
+User: John Miller.
+Agent: And your date of birth?
+User: 7-15-72.
+Agent: Thank you. What claim would you like to check?
+User: The one for my MRI.
+Agent: Your MRI claim from February 2nd is still pending with your insurance. They requested additional documentation.
+User: Do I need to send anything?
+Agent: No action is required from you at this time.
+User: Okay great, thanks.
+Conversation 3: Patient wants payment plan
+User: I need to set up a payment plan.
+Agent: I can help. Can I have your name?
+User: Emily Reyes.
+Agent: Thank you. Date of birth?
+User: 11/03/1990.
+Agent: Your balance is 612 dollars. You qualify for a 3‑month payment plan.
+User: Can we do 4 months?
+Agent: You also qualify for a 4‑month option.
+User: Let’s do that.
+Agent: Your payment plan is now active.

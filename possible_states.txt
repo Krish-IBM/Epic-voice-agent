@@ -1,0 +1,36 @@
+start
+collect_name
+collect_dob
+verify_identity
+determine_issue
+handle_balance_question
+handle_claim_status
+handle_payment_plan
+handle_insurance_question
+provide_answer
+followup
+closing
+SAMPLE RULES + INTENTS
+Intents:
+provide_name
+provide_dob
+ask_balance
+ask_claim_status
+ask_payment_plan
+ask_why_bill
+insurance_question
+confirm_yes
+confirm_no
+goodbye
+none
+Example trigger rules (simple text matching):
+If input contains "bill", "balance", "owe" → intent = ask_balance
+If input contains "claim", "status", "pending" → intent = ask_claim_status
+If input contains "payment plan", "pay over time" → intent = ask_payment_plan
+If input contains "insurance", "covered", "coverage" → intent = insurance_question
+If input matches name pattern → provide_name
+If input matches date pattern → provide_dob
+If input contains "yes", "yeah", "sure" → confirm_yes
+If input contains "no", "nope" → confirm_no
+If input contains "bye", "goodbye", "that’s all" → goodbye
+Else → none
