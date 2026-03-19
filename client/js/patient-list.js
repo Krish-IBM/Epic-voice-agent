@@ -175,7 +175,7 @@ function viewHistory() {
     alert('View History feature - Coming soon!');
 }
 
-function logout() {
-    sessionStorage.clear();
-    window.location.href = 'index.html';
-}
+// function logout() {
+//     sessionStorage.clear();
+//     window.location.href = 'index.html';
+// }

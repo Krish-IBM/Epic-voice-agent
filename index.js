@@ -1,6 +1,15 @@
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
+const { CognitoIdentityProviderClient, InitiateAuthCommand } = require("@aws-sdk/client-cognito-identity-provider");
+
+const cognitoClient = new CognitoIdentityProviderClient({
+  region: "us-east-1",
+  endpoint: "http://localhost:4566",
+  credentials: { accessKeyId: "test", secretAccessKey: "test" },
+});
+
+
 const client = new DynamoDBClient({
   region: "us-east-1",
   endpoint: "http://localhost:4566",
@@ -22,11 +31,22 @@ const PORT = process.env.PORT || 3000;
 
 // Serve static files from the current directory
 // app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname,'./client')));
+// app.use(express.static(path.join(__dirname,'./client')));
+// app.use(express.json());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, './client')));
+
 
 // Serve index.html on the root route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, './client/index.html'));
+});
+
+// Serve login page
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/login.html"));
 });
 
 
@@ -40,6 +60,29 @@ app.get('/', (req, res) => {
 //     res.status(500).json({ error: "Failed to fetch patients" });
 //   }
 // });
+
+
+
+app.post("/auth/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const command = new InitiateAuthCommand({
+      AuthFlow: "USER_PASSWORD_AUTH",
+      ClientId: process.env.COGNITO_CLIENT_ID,
+      AuthParameters: {
+        USERNAME: username,
+        PASSWORD: password,
+      },
+    });
+    const response = await cognitoClient.send(command);
+    const token = response.AuthenticationResult.IdToken;
+    res.json({ token });
+  } catch (err) {
+    console.error("Auth error:", err);
+    res.status(401).json({ error: "Invalid credentials" });
+  }
+});
+
 
 
 
