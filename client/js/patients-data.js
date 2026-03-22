@@ -2,7 +2,7 @@
 async function loadPatients() {
   try {
     const response = await fetch("/api/patients");
-    const patientsData = await response.json();
+    const patientsData = await response.json();``
     const sorted = patientsData.sort((a, b) => a.id.localeCompare(b.id));
     console.log(sorted);
     // Now you can use the data here
