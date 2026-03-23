@@ -89,7 +89,7 @@ function updateDashboardWithPatientData(patient) {
 }
 
 function goBack() {
-    window.location.href = 'patient-list.html';
+    window.location.href = '/patient-list';
 }
 
 function jumpIn() {
@@ -117,6 +117,12 @@ setTimeout(() => {
 
 // Add button click handlers
 document.addEventListener('DOMContentLoaded', function() {
+
+    if (!sessionStorage.getItem("auth_token") || !selectedPatient) {
+        window.location.href = "/login";
+        return;``
+    }
+
     document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const action = this.textContent.trim();
