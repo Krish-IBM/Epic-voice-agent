@@ -49,6 +49,16 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/login.html"));
 });
 
+// Serve patient list page
+app.get("/patient-list", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/patient-list.html"));
+});
+
+//Serve voice agent dashboard page
+app.get("/agent-dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/epic_claims_dashboard.html"));
+});
+
 
 // GET /api/patients (through DynamoDB)
 // app.get("/api/patients", async (req, res) => {
@@ -130,6 +140,10 @@ app.patch("/api/patients/:id", async (req, res) => {
 
 
 
+//404 catch-all route, MUST be last
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "./client/404.html"));
+});
 
 
 // Start the server

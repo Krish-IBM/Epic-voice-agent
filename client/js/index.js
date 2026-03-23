@@ -3,7 +3,7 @@ function selectUser(name, role) {
     sessionStorage.setItem('currentUser', name);
     sessionStorage.setItem('currentRole', role);
     // Navigate to patient list
-    window.location.href = 'patient-list.html';
+    window.location.href = '/patient-list';
 }
 
 // Auth guard — redirect to login if no token

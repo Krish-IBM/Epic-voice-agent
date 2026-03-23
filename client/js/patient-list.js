@@ -18,7 +18,7 @@ function displayPatients(patientsData) {
     const userRole = sessionStorage.getItem('currentRole');
     
     if (!userName) {
-        window.location.href = 'index.html';
+        window.location.href = '/';
         return;
     }
 
@@ -167,7 +167,7 @@ function launchVoiceAgent() {
         // Store selected patient in session
         sessionStorage.setItem('selectedPatient', JSON.stringify(selectedPatient));
         // Navigate to voice agent dashboard
-        window.location.href = 'epic_claims_dashboard.html';
+        window.location.href = '/agent-dashboard';
     }
 }
 
@@ -177,5 +177,5 @@ function viewHistory() {
 
 function logout() {
     sessionStorage.clear();
-    window.location.href = 'index.html';
+    window.location.href = '/';
 }
