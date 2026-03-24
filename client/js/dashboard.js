@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!sessionStorage.getItem("auth_token") || !selectedPatient) {
         window.location.href = "/login";
-        return;``
+        return;
     }
 
     document.querySelectorAll('.btn').forEach(btn => {
