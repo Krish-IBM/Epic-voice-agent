@@ -1,12 +1,18 @@
 // Patient data - loaded from patients-data.js
-let patients = [];
+let all_patients = [];
+let active_patients = [];
+let resolved_patients = [];
 let selectedPatient = null;
+let current_patient_type_displayed = "active";
 
 // Initialize page
 function displayPatients(patientsData) {
     // Load patients from the patientsData global variable
     if (typeof patientsData !== 'undefined' && patientsData) {
-        patients = patientsData;
+        all_patients = patientsData;
+        let partition = partitionPatientsByStatus(patientsData);
+        active_patients = partition.unresolved;
+        resolved_patients = partition.resolved;
     } else {
         console.error('Error: Patient data not loaded');
         alert('Error loading patient data. Please refresh the page.');
@@ -26,15 +32,29 @@ function displayPatients(patientsData) {
     document.getElementById('userRole').textContent = userRole;
 
     // Populate patient list
-    renderPatientList(patients);
+    renderPatientList(current_patient_type_displayed);
 
     // Setup search
     document.getElementById('searchInput').addEventListener('input', handleSearch);
 };
 
-function renderPatientList(patientsToRender) {
+function renderPatientList(patientsTypeToRender, patientsToRender) {
+    if (!patientsToRender) {
+        patientsToRender = patientsTypeToRender === "active" ? active_patients : resolved_patients;
+    }
+
     const patientList = document.getElementById('patientList');
     patientList.innerHTML = '';
+
+    if (patientsToRender.length === 0) {
+        patientList.innerHTML = `
+            <div class="empty-patient-list">
+                <p>No ${patientsTypeToRender} patients found ⏳</p>
+            </div>
+        `;
+        return;
+    }
+
 
     patientsToRender.forEach(patient => {
         const card = document.createElement('div');
@@ -42,7 +62,7 @@ function renderPatientList(patientsToRender) {
         if (selectedPatient && selectedPatient.id === patient.id) {
             card.classList.add('selected');
         }
-        
+
         card.innerHTML = `
             <div class="patient-header">
                 <div>
@@ -52,25 +72,13 @@ function renderPatientList(patientsToRender) {
                 <div class="status-badge ${patient.status}">${patient.status.toUpperCase()}</div>
             </div>
             <div class="patient-info">
-                <div>
-                    <span class="info-label">Claim:</span>
-                    <span class="info-value">${patient.claimId}</span>
-                </div>
-                <div>
-                    <span class="info-label">Amount:</span>
-                    <span class="info-value">${patient.claimAmount}</span>
-                </div>
-                <div>
-                    <span class="info-label">Type:</span>
-                    <span class="info-value">${patient.claimType}</span>
-                </div>
-                <div>
-                    <span class="info-label">Date:</span>
-                    <span class="info-value">${patient.serviceDate}</span>
-                </div>
+                <div><span class="info-label">Claim:</span><span class="info-value">${patient.claimId}</span></div>
+                <div><span class="info-label">Amount:</span><span class="info-value">${patient.claimAmount}</span></div>
+                <div><span class="info-label">Type:</span><span class="info-value">${patient.claimType}</span></div>
+                <div><span class="info-label">Date:</span><span class="info-value">${patient.serviceDate}</span></div>
             </div>
         `;
-        
+
         card.onclick = () => selectPatient(patient);
         patientList.appendChild(card);
     });
@@ -140,7 +148,7 @@ function selectPatient(patient) {
     `;
 
     // Re-render patient list to show selection
-    renderPatientList(patients);
+    renderPatientList(current_patient_type_displayed);
 }
 
 function getStatusColor(status) {
@@ -152,14 +160,20 @@ function getStatusColor(status) {
     return colors[status] || '#718096';
 }
 
+let filtered;
+
 function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase();
-    const filtered = patients.filter(patient => 
+
+    const sourcePatients = current_patient_type_displayed === "active" ? active_patients : resolved_patients;
+
+    const filtered = sourcePatients.filter(patient =>
         patient.name.toLowerCase().includes(searchTerm) ||
         patient.mrn.toLowerCase().includes(searchTerm) ||
         patient.claimId.toLowerCase().includes(searchTerm)
     );
-    renderPatientList(filtered);
+
+    renderPatientList(current_patient_type_displayed, filtered);
 }
 
 function launchVoiceAgent() {
