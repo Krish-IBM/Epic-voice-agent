@@ -71,7 +71,7 @@ let micStream = null;
 let animationFrameId = null;
 let conversationHistory = [];
 
-const GROQ_API_KEY = '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';
+const GROQ_API_KEY = 'groq_key_here';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 function buildSystemPrompt() {
