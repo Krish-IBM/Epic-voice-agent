@@ -1,12 +1,14 @@
 # Epic Voice Agent
 
-A medical billing specialist dashboard integrated with a voice agent for handling inbound insurance calls and claim management. The application simulates a production AWS environment locally using LocalStack.
+A medical billing specialist dashboard integrated with an AI voice agent that handles outbound insurance calls and claim resolution. The application simulates a production AWS environment locally using LocalStack.
 
 ---
 
 ## Overview
 
-Epic Voice Agent provides billing specialists with a centralized dashboard to view and manage patient claims. The system is designed to support a voice agent that can handle inbound calls, look up claim statuses, and update records in real time — all backed by AWS services running locally via LocalStack.
+Epic Voice Agent gives billing specialists a centralized dashboard to view and manage patient claims. When a specialist opens a patient's record, the AI voice agent automatically places an outbound call to the insurance company, navigates the conversation, and works to resolve the claim — handling pending claims, documentation requests, denials, and approvals.
+
+The agent speaks using the browser's built-in Text-to-Speech, listens for the insurance rep's responses via the microphone, transcribes them in real time, and uses Groq (Llama 3.3 70B) to generate the next response — all grounded in the patient's real claim data from DynamoDB.
 
 ---
 
@@ -20,6 +22,9 @@ Epic Voice Agent provides billing specialists with a centralized dashboard to vi
 | Serverless | AWS Lambda (LocalStack) |
 | API | AWS API Gateway (LocalStack) |
 | Auth | AWS Cognito (LocalStack) |
+| AI Conversation | Groq API (Llama 3.3 70B) |
+| Speech-to-Text | Web Speech API (browser-native) |
+| Text-to-Speech | Web Speech Synthesis API (browser-native) |
 | Local AWS | LocalStack + Docker |
 
 ---
@@ -33,6 +38,7 @@ Make sure you have the following installed before running the project:
 - [Node.js](https://nodejs.org/)
 - [AWS CLI](https://aws.amazon.com/cli/)
 - [jq](https://stedolan.github.io/jq/) — install via `brew install jq`
+- A [Groq API key](https://console.groq.com) — free tier, no credit card required
 
 ---
 
@@ -77,15 +83,16 @@ Password: Admin1234!
 
 ## API Endpoints
 
-All endpoints are routed through AWS API Gateway → Lambda → DynamoDB.
+All patient endpoints are routed through AWS API Gateway → Lambda → DynamoDB.
 
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/patients` | Fetch all patients |
 | GET | `/api/patients/:id` | Fetch a single patient by ID |
 | PATCH | `/api/patients/:id` | Update a patient's claim status |
+| GET | `/config` | Expose client-side environment config (Groq key) |
 
-### Example Request
+### Example Requests
 ```bash
 # Get all patients
 curl http://localhost:3000/api/patients
@@ -104,17 +111,49 @@ curl -X PATCH http://localhost:3000/api/patients/PT001 \
 ## Environment Variables
 
 The setup script automatically updates the `.env` file on each run. The following variables are required:
+
 ```
 API_BASE_URL=http://localhost:4566/restapis/<api-id>/dev/_user_request_
 COGNITO_USER_POOL_ID=<user-pool-id>
 COGNITO_CLIENT_ID=<client-id>
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-> These values are regenerated each time LocalStack restarts. The setup script handles this automatically.
+> `API_BASE_URL`, `COGNITO_USER_POOL_ID`, and `COGNITO_CLIENT_ID` are regenerated each time LocalStack restarts. The setup script handles these automatically and will not touch your `GROQ_API_KEY`.
+
+The `GROQ_API_KEY` is served to the frontend at runtime via the `/config` endpoint — it is never hardcoded in client-side JavaScript.
+
+---
+
+## Voice Agent
+
+### How It Works
+
+1. Open a patient record from the patient list
+2. On the dashboard, press **Start Call**
+3. The agent introduces itself and references the patient's real claim ID and name
+4. Speak the insurance rep's responses into your microphone
+5. The agent transcribes your input, sends it to Groq, and speaks the AI's reply back
+6. The conversation loops until you press **End Call**
+
+### Scenarios the Agent Handles
+
+| Scenario | Agent Behavior |
+|---|---|
+| Claim is pending | Asks what is blocking it, pushes for a timeline |
+| Documentation needed | Confirms which docs are needed, asks for fax/portal and reference number |
+| Claim denied | Requests denial code, pursues peer-to-peer review or appeals process |
+| Claim approved | Confirms amount and payment date, asks for EOB, closes professionally |
+
+### Browser Support
+
+The voice agent uses the Web Speech API for both STT and TTS. This is best supported in **Google Chrome**. Firefox and Safari have limited or no support for `SpeechRecognition`.
 
 ---
 
 ## Notes
 
 - LocalStack does not persist state between restarts. Always run `./setup-localstack.sh` after starting LocalStack to recreate all AWS resources.
-- The `.env` file is updated automatically by the setup script — no manual changes needed.
+- The `.env` file is updated automatically by the setup script — your `GROQ_API_KEY` is never overwritten.
+- The voice agent is designed for outbound calls to insurance companies, not inbound calls from patients.
+- For best voice agent performance, use the app in a quiet environment and speak clearly after the agent finishes its response.
