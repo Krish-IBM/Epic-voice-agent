@@ -2,6 +2,8 @@
 let patientData = null;
 
 window.onload = function () {
+    loadConfig();
+
     const selectedPatient = sessionStorage.getItem('selectedPatient');
     if (selectedPatient) {
         patientData = JSON.parse(selectedPatient);
@@ -71,8 +73,18 @@ let micStream = null;
 let animationFrameId = null;
 let conversationHistory = [];
 
-const GROQ_API_KEY = 'groq_key_here';
+let GROQ_API_KEY = 'groq_key_here';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+
+async function loadConfig() {
+    const res = await fetch('/config');
+    const config = await res.json();
+    GROQ_API_KEY = config.groqApiKey;
+    console.log("SET KEY!");
+}
+
+
 
 function buildSystemPrompt() {
     const p = patientData || {};

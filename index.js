@@ -96,6 +96,15 @@ app.post("/auth/login", async (req, res) => {
 
 
 
+// Call to use GROQ
+app.get('/config', (req, res) => {
+  res.json({
+    groqApiKey: process.env.GROQ_API_KEY
+  });
+});
+
+
+
 
 // REST calls through API Gateway
 
