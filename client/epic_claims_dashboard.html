@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Epic Patient Claims - Voice Agent Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
-
+    <link rel="stylesheet" href="css/voice-agent.css">
     <script defer src="js/dashboard.js"></script>
-
 </head>
 <body>
     <div class="container">
@@ -32,49 +31,27 @@
                 <div class="card-icon" style="background: #fef3c7; color: #f59e0b;">🔄</div>
                 Claim Resolution Workflow
             </div>
-            
             <div class="workflow-steps">
-                <div class="step completed">
-                    <div class="step-circle">✓</div>
-                    <div class="step-label">Claim Received</div>
-                </div>
-                <div class="step completed">
-                    <div class="step-circle">✓</div>
-                    <div class="step-label">Initial Review</div>
-                </div>
-                <div class="step completed">
-                    <div class="step-circle">✓</div>
-                    <div class="step-label">Agent Initiated</div>
-                </div>
-                <div class="step active">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">Insurance Contact</div>
-                </div>
-                <div class="step">
-                    <div class="step-circle">5</div>
-                    <div class="step-label">Documentation</div>
-                </div>
-                <div class="step">
-                    <div class="step-circle">6</div>
-                    <div class="step-label">Approval</div>
-                </div>
-                <div class="step">
-                    <div class="step-circle">7</div>
-                    <div class="step-label">Resolution</div>
-                </div>
+                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Claim Received</div></div>
+                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Initial Review</div></div>
+                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Agent Initiated</div></div>
+                <div class="step active"><div class="step-circle">4</div><div class="step-label">Insurance Contact</div></div>
+                <div class="step"><div class="step-circle">5</div><div class="step-label">Documentation</div></div>
+                <div class="step"><div class="step-circle">6</div><div class="step-label">Approval</div></div>
+                <div class="step"><div class="step-circle">7</div><div class="step-label">Resolution</div></div>
             </div>
-
             <div class="actions">
-                <button class="btn btn-primary">📤 Submit Documents</button>
-                <button class="btn btn-success">✓ Approve Claim</button>
-                <button class="btn btn-secondary">📝 Add Note</button>
-                <button class="btn btn-secondary">📞 Call Back</button>
-                <button class="btn btn-danger">⚠️ Escalate</button>
+                <button class="btn btn-primary btn-action">📤 Submit Documents</button>
+                <button class="btn btn-success btn-action">✓ Approve Claim</button>
+                <button class="btn btn-secondary btn-action">📝 Add Note</button>
+                <button class="btn btn-secondary btn-action">📞 Call Back</button>
+                <button class="btn btn-danger btn-action">⚠️ Escalate</button>
             </div>
         </div>
 
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
+
             <!-- Patient Information -->
             <div class="card">
                 <div class="card-title">
@@ -82,30 +59,12 @@
                     Patient Information
                 </div>
                 <div class="patient-info">
-                    <div class="info-item">
-                        <div class="info-label">Patient Name</div>
-                        <div class="info-value">Sarah Johnson</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">MRN</div>
-                        <div class="info-value">MRN-2024-789456</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Date of Birth</div>
-                        <div class="info-value">03/15/1985</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Insurance</div>
-                        <div class="info-value">Blue Cross PPO</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Policy Number</div>
-                        <div class="info-value">BC-458-9821-01</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Phone</div>
-                        <div class="info-value">(555) 123-4567</div>
-                    </div>
+                    <div class="info-item"><div class="info-label">Patient Name</div><div class="info-value">—</div></div>
+                    <div class="info-item"><div class="info-label">MRN</div><div class="info-value">—</div></div>
+                    <div class="info-item"><div class="info-label">Date of Birth</div><div class="info-value">—</div></div>
+                    <div class="info-item"><div class="info-label">Insurance</div><div class="info-value">—</div></div>
+                    <div class="info-item"><div class="info-label">Policy Number</div><div class="info-value">—</div></div>
+                    <div class="info-item"><div class="info-label">Phone</div><div class="info-value">—</div></div>
                 </div>
             </div>
 
@@ -116,26 +75,11 @@
                     Claim Details
                 </div>
                 <div class="claim-details">
-                    <div class="claim-item">
-                        <div class="claim-label">Claim ID</div>
-                        <div class="claim-value">CLM-2024-00987</div>
-                    </div>
-                    <div class="claim-item">
-                        <div class="claim-label">Service Date</div>
-                        <div class="claim-value">02/10/2024</div>
-                    </div>
-                    <div class="claim-item">
-                        <div class="claim-label">Provider</div>
-                        <div class="claim-value">Dr. Michael Chen</div>
-                    </div>
-                    <div class="claim-item">
-                        <div class="claim-label">Claim Amount</div>
-                        <div class="claim-value">$2,450.00</div>
-                    </div>
-                    <div class="claim-item">
-                        <div class="claim-label">Claim Type</div>
-                        <div class="claim-value">Outpatient Surgery</div>
-                    </div>
+                    <div class="claim-item"><div class="claim-label">Claim ID</div><div class="claim-value">—</div></div>
+                    <div class="claim-item"><div class="claim-label">Service Date</div><div class="claim-value">—</div></div>
+                    <div class="claim-item"><div class="claim-label">Provider</div><div class="claim-value">—</div></div>
+                    <div class="claim-item"><div class="claim-label">Claim Amount</div><div class="claim-value">—</div></div>
+                    <div class="claim-item"><div class="claim-label">Claim Type</div><div class="claim-value">—</div></div>
                     <div class="claim-item" style="border-left-color: #f59e0b;">
                         <div class="claim-label">Status</div>
                         <div class="claim-value" style="color: #f59e0b;">Under Review</div>
@@ -143,41 +87,44 @@
                 </div>
             </div>
 
-            <!-- Voice Agent Section -->
+            <!-- ─── VOICE AGENT CARD ─────────────────────── -->
             <div class="card voice-agent">
                 <div class="card-title">
                     <div class="card-icon" style="background: #f0fdf4; color: #22c55e;">🎙️</div>
-                    Voice Agent - Live Transcription
-                </div>
-                
-                <div class="agent-status">
-                    <div class="mic-icon">🎤</div>
-                    <div class="agent-info">
-                        <h3>AI Agent: Active Call in Progress</h3>
-                        <p>Duration: 3:47 | Confidence Level: 94%</p>
-                    </div>
-                    <button class="btn btn-primary" onclick="jumpIn()" style="white-space: nowrap;">
-                        🎯 Jump In
-                    </button>
+                    Voice Agent — Live Call
                 </div>
 
+                <!-- Status Bar -->
+                <div class="agent-status-bar">
+                    <div class="agent-status-left">
+                        <div class="status-dot" id="agent-status-dot"></div>
+                        <span class="status-label" id="agent-status-text">Agent Idle</span>
+                    </div>
+                    <div class="agent-status-right">
+                        <span class="duration-label">⏱</span>
+                        <span class="duration-value" id="call-duration">0:00</span>
+                    </div>
+                </div>
+
+                <!-- Waveform Visualizer -->
+                <div class="waveform-container" id="waveform-container" style="display:none;">
+                    <div class="waveform-label" id="listening-indicator">🎤 Listening...</div>
+                    <canvas id="waveform-canvas" width="500" height="48"></canvas>
+                </div>
+
+                <!-- Transcript Box -->
                 <div class="transcription-box" id="transcription">
-                    <div class="transcript-line">
-                        <div class="speaker">Agent:</div>
-                        <div>Hello, this is the Epic Claims Resolution Center. I'm calling regarding claim CLM-2024-00987 for Sarah Johnson. May I speak with someone who can help resolve this claim?</div>
+                    <div class="transcript-placeholder">
+                        <div class="placeholder-icon">🎙️</div>
+                        <div>Press <strong>Start Call</strong> to begin the AI agent</div>
                     </div>
-                    <div class="transcript-line">
-                        <div class="speaker">Insurance Rep:</div>
-                        <div>Yes, this is Jennifer from Blue Cross. I have the claim pulled up. What information do you need?</div>
-                    </div>
-                    <div class="transcript-line">
-                        <div class="speaker">Agent:</div>
-                        <div>Thank you, Jennifer. The claim for outpatient surgery on February 10th is currently under review. We're following up to verify coverage and expedite approval. Can you confirm the status?</div>
-                    </div>
-                    <div class="transcript-line">
-                        <div class="speaker">Insurance Rep:</div>
-                        <div>I see the claim here. It's pending additional documentation. We need the surgical notes and pre-authorization reference number.</div>
-                    </div>
+                </div>
+
+                <!-- Toggle Button -->
+                <div class="agent-controls">
+                    <button class="agent-toggle-btn" id="agent-toggle-btn" onclick="toggleAgent()">
+                        ▶ Start Call
+                    </button>
                 </div>
             </div>
 
