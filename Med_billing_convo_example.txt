@@ -1,36 +1,247 @@
-Conversation 1: Patient asking about balance
-User: Hi, I got a bill in the mail and I want to understand why it’s so high.
-Agent: I can help with that. May I have your full name?
-User: Sarah Thompson.
-Agent: Thank you. What is your date of birth?
-User: April 9th, 1981.
-Agent: Thank you. I found your account. Which bill are you calling about?
-User: The one for 423 dollars.
-Agent: That balance is because your deductible wasn’t met for the visit on January 12th.
-User: Oh, okay. Does insurance cover any of it?
-Agent: Yes. Insurance covered 80 percent after your deductible.
-User: Alright, thanks.
-Agent: You’re welcome. Anything else I can help with?
-Conversation 2: Patient asking claim status
-User: Hi, I want to check on a claim.
-Agent: Certainly. May I have your name?
-User: John Miller.
-Agent: And your date of birth?
-User: 7-15-72.
-Agent: Thank you. What claim would you like to check?
-User: The one for my MRI.
-Agent: Your MRI claim from February 2nd is still pending with your insurance. They requested additional documentation.
-User: Do I need to send anything?
-Agent: No action is required from you at this time.
-User: Okay great, thanks.
-Conversation 3: Patient wants payment plan
-User: I need to set up a payment plan.
-Agent: I can help. Can I have your name?
-User: Emily Reyes.
-Agent: Thank you. Date of birth?
-User: 11/03/1990.
-Agent: Your balance is 612 dollars. You qualify for a 3‑month payment plan.
-User: Can we do 4 months?
-Agent: You also qualify for a 4‑month option.
-User: Let’s do that.
-Agent: Your payment plan is now active.
+🧪 Conversation 1 — Basic Claim Status (Happy Path)
+
+Agent:
+Hello, this is the Epic Claims Resolution Center calling regarding claim CLM-48291 for patient Sarah Thompson. May I speak with someone in claims processing?
+
+Rep:
+Yes, I can help. What do you need?
+
+Agent:
+Thank you. I’m calling to check the status of this claim for a service date of January 12th. Can you provide an update?
+
+Rep:
+That claim is currently pending.
+
+Agent:
+Understood. Can you confirm if any additional documentation is required at this time?
+
+Rep:
+Yes, we need the operative report.
+
+Agent:
+Thank you. Once that report is submitted, what is the expected processing timeframe?
+
+Rep:
+Typically 5 to 7 business days.
+
+Agent:
+Great, I’ll submit that today. Can I have a reference number for this call?
+
+Rep:
+Yes, it’s REF-77321.
+
+Agent:
+Thank you for your help. That’s all I needed.
+
+
+
+
+🧪 Conversation 2 — Missing Info (Agent Should Ask Again)
+
+Agent:
+Hello, this is Epic Claims Resolution Center calling about a patient claim. Can you help me check the status?
+
+Rep:
+Sure, what’s the claim number?
+
+Agent:
+It’s for a recent surgery.
+
+Rep:
+I’ll need a claim ID or patient details.
+
+👉 (Your agent should recognize missing info and recover here)
+
+Agent:
+Apologies. The claim ID is CLM-99302 for patient John Miller, date of service February 2nd.
+
+Rep:
+Got it. That claim is denied.
+
+Agent:
+Thank you. Can you provide the reason for denial?
+
+
+
+
+🧪 Conversation 3 — Denial + Follow-Up Questions
+
+Rep:
+That claim was denied due to missing pre-authorization.
+
+Agent:
+Understood. Can you confirm if a retroactive authorization can be submitted?
+
+Rep:
+Yes, but it must be within 30 days.
+
+Agent:
+We are still within that window. What documentation is required to process that request?
+
+Rep:
+You’ll need clinical notes and a retro auth form.
+
+Agent:
+Thank you. Where should those documents be submitted?
+
+Rep:
+You can upload them through the provider portal.
+
+Agent:
+Perfect. I’ll proceed with that. Can I get a reference number for this interaction?
+
+
+
+
+🧪 Conversation 4 — Rep Pushback (Stress Test)
+
+Agent:
+Hi, I’m calling regarding claim CLM-77124 for Emily Reyes. Can you provide the status?
+
+Rep:
+I can’t release that information without verifying provider credentials.
+
+👉 (Agent must respond professionally and recover)
+
+Agent:
+Understood. This is Epic Claims Resolution Center calling on behalf of the provider. What information do you need to verify access?
+
+Rep:
+I need the NPI number.
+
+Agent:
+The NPI is 1457392841.
+
+Rep:
+Thank you. The claim is approved.
+
+Agent:
+Great. Can you confirm the approved amount and payment date?
+
+
+
+
+🧪 Conversation 5 — Multiple Claims Ambiguity
+
+Agent:
+Hello, I’m calling about a claim for Michael Chen related to an MRI.
+
+Rep:
+There are two MRI claims on file. Which one?
+
+👉 (Agent must clarify instead of guessing)
+
+Agent:
+Thank you for clarifying. The service date should be March 3rd.
+
+Rep:
+Okay, that one is still under review.
+
+Agent:
+Understood. Is there anything pending on that claim that could delay processing?
+
+
+
+
+🧪 Conversation 6 — No Action Needed
+
+Rep:
+That claim has already been processed and paid.
+
+Agent:
+Great. Can you confirm the payment amount and date?
+
+Rep:
+It was paid at $1,240 on March 10th.
+
+Agent:
+Thank you. Was any patient responsibility assigned?
+
+Rep:
+Yes, $240.
+
+Agent:
+Understood. That answers my questions, thank you.
+
+
+
+
+🧪 Conversation 7 — Rep Gives Incomplete Answer (Agent Should Probe)
+
+Rep:
+The claim is still pending.
+
+👉 (Agent should NOT stop here)
+
+Agent:
+Understood. Can you tell me what stage of review it is currently in?
+
+Rep:
+It’s in medical review.
+
+Agent:
+Thank you. Is there an estimated completion timeframe?
+
+
+
+
+🧪 Conversation 8 — System Error / Escalation
+
+Rep:
+I’m not seeing that claim in the system.
+
+👉 (Agent must troubleshoot)
+
+Agent:
+Understood. Let me confirm the details. The claim ID is CLM-55581 for patient David Park, service date January 28th.
+
+Rep:
+Still not seeing it.
+
+Agent:
+Could this claim be under a different processing system or still in intake?
+
+Rep:
+It might still be in intake.
+
+Agent:
+Thank you. When should I follow up for a status update?
+
+
+
+
+🧪 Conversation 9 — Time Delay / Silence Handling
+
+Agent:
+Can you confirm if documentation is required?
+
+Rep:
+… (pause)
+
+👉 (Agent should not immediately restart or break)
+
+Rep:
+Yes, sorry, we need lab results.
+
+Agent:
+No problem. Thank you for confirming. Where should those be submitted?
+
+
+
+
+🧪 Conversation 10 — Call Wrap-Up Best Practice
+
+Agent:
+Before I wrap up, can you confirm there are no additional issues pending on this claim?
+
+Rep:
+No, everything else looks good.
+
+Agent:
+Perfect. And the reference number for this call?
+
+Rep:
+REF-88912.
+
+Agent:
+Thank you for your help today. Have a great day.
