@@ -1,8 +1,8 @@
 // ─── PATIENT DATA ─────────────────────────────────────────
 let patientData = null;
 
-window.onload = function () {
-    loadConfig();
+window.onload = async function () {
+    await loadConfig();
 
     const selectedPatient = sessionStorage.getItem('selectedPatient');
     if (selectedPatient) {
@@ -44,6 +44,16 @@ function goBack() {
     window.location.href = '/patient-list';
 }
 
+// ─── CONFIG ───────────────────────────────────────────────
+let GROQ_API_KEY = null;
+
+async function loadConfig() {
+    const res = await fetch('/config');
+    const config = await res.json();
+    GROQ_API_KEY = config.groqApiKey;
+    console.log('✅ Config loaded');
+}
+
 // ─── CALL DURATION TIMER ──────────────────────────────────
 let duration = 0;
 let timerInterval = null;
@@ -66,6 +76,7 @@ function stopTimer() {
 // ─── VOICE AGENT STATE ────────────────────────────────────
 let isAgentActive = false;
 let isListening = false;
+let isSpeaking = false; // 🔒 tracks when TTS is active
 let recognition = null;
 let audioContext = null;
 let analyser = null;
@@ -73,18 +84,8 @@ let micStream = null;
 let animationFrameId = null;
 let conversationHistory = [];
 
-let GROQ_API_KEY = 'groq_key_here';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
-
-
-async function loadConfig() {
-    const res = await fetch('/config');
-    const config = await res.json();
-    GROQ_API_KEY = config.groqApiKey;
-    console.log("SET KEY!");
-}
-
-
+const GOODBYE_PHRASE = 'thank you have a great day, goodbye';
 
 function buildSystemPrompt() {
     const p = patientData || {};
@@ -131,8 +132,9 @@ CONVERSATION RULES:
 - Keep responses short, 1 to 3 sentences max, this is a voice call
 - Never use markdown, bullet points, or any formatting
 - Ask one question at a time
-- Always get a reference number before ending the call
-- If transferred or put on hold, acknowledge it and wait patiently`;
+- Always get a reference number and name of the caller before ending the call and make sure to ask them to spell the name out and double check that it is correct
+- If transferred or put on hold, acknowledge it and wait patiently
+- When you have all the information needed and want to end the call say exactly: "Thank you have a great day, goodbye!"`;
 }
 
 // ─── TOGGLE AGENT ─────────────────────────────────────────
@@ -155,9 +157,10 @@ async function startAgent() {
         : `Hello, this is the Epic Claims Resolution Center. May I speak with someone in claims processing?`;
 
     conversationHistory.push({ role: 'assistant', content: opening });
-
     appendTranscript('Agent', opening);
+
     await speak(opening);
+
     if (isAgentActive) {
         setTimeout(() => startListening(), 1000);
     }
@@ -166,6 +169,7 @@ async function startAgent() {
 function stopAgent() {
     isAgentActive = false;
     isListening = false;
+    isSpeaking = false;
     stopTimer();
     stopMic();
     stopWaveform();
@@ -176,6 +180,7 @@ function stopAgent() {
         recognition = null;
     }
     appendTranscript('System', 'Call ended.');
+    checkClaimStatus(conversationHistory);
 }
 
 // ─── UI STATE ─────────────────────────────────────────────
@@ -204,7 +209,8 @@ function updateAgentUI(active) {
 
 // ─── SPEECH RECOGNITION (STT) ─────────────────────────────
 function startListening() {
-    if (isListening) return; // 🔒 prevent double-start
+    if (isListening) return;  // 🔒 prevent double-start
+    if (isSpeaking) return;   // 🔒 never listen while agent is speaking
 
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         appendTranscript('System', 'Speech recognition not supported in this browser.');
@@ -260,30 +266,39 @@ function startListening() {
         stopMicVisualizer();
         if (interimEl) { interimEl.remove(); interimEl = null; }
 
-        if (isAgentActive) {
+        // Only restart if agent is active and NOT currently speaking
+        if (isAgentActive && !isSpeaking) {
             setTimeout(() => {
-                if (isAgentActive && !isListening) startListening();
+                if (isAgentActive && !isListening && !isSpeaking) startListening();
             }, 500);
         }
     };
 
     recognition.onerror = (e) => {
-        // Suppress aborted and no-speech — both are normal browser behavior
         if (e.error !== 'no-speech' && e.error !== 'aborted') {
             appendTranscript('System', `Mic error: ${e.error}`);
         }
         isListening = false;
         setListeningIndicator(false);
 
-        if (isAgentActive) {
+        if (isAgentActive && !isSpeaking) {
             const delay = e.error === 'aborted' ? 800 : 500;
             setTimeout(() => {
-                if (isAgentActive && !isListening) startListening();
+                if (isAgentActive && !isListening && !isSpeaking) startListening();
             }, delay);
         }
     };
 
     recognition.start();
+}
+
+function stopListening() {
+    if (recognition && isListening) {
+        recognition.abort();
+    }
+    isListening = false;
+    setListeningIndicator(false);
+    stopMicVisualizer();
 }
 
 function setListeningIndicator(on) {
@@ -326,7 +341,19 @@ async function handleRepResponse(repText) {
         if (agentReply) {
             conversationHistory.push({ role: 'assistant', content: agentReply });
             thinkingEl.querySelector('.transcript-text').textContent = agentReply;
+
+            // Stop listening before agent speaks
+            stopListening();
+
             await speak(agentReply);
+
+            // Check if agent said goodbye — end call instead of resuming listen
+            if (agentReply.toLowerCase().includes(GOODBYE_PHRASE)) {
+                stopAgent();
+                return;
+            }
+
+            // Resume listening after agent finishes speaking
             if (isAgentActive) {
                 setTimeout(() => startListening(), 1000);
             }
@@ -347,11 +374,26 @@ function speak(text) {
         utterance.rate = 1.05;
         utterance.pitch = 1;
         utterance.volume = 1;
-        utterance.onend = resolve;
-        utterance.onerror = resolve;
+
+        utterance.onstart = () => {
+            isSpeaking = true;  // 🔒 block mic while speaking
+        };
+
+        utterance.onend = () => {
+            isSpeaking = false; // ✅ allow mic again
+            resolve();
+        };
+
+        utterance.onerror = () => {
+            isSpeaking = false;
+            resolve();
+        };
+
         window.speechSynthesis.speak(utterance);
     });
 }
+
+
 
 // ─── TRANSCRIPT ───────────────────────────────────────────
 function clearTranscriptPlaceholder() {

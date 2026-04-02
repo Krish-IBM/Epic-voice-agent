@@ -99,7 +99,8 @@ app.post("/auth/login", async (req, res) => {
 // Call to use GROQ
 app.get('/config', (req, res) => {
   res.json({
-    groqApiKey: process.env.GROQ_API_KEY
+    groqApiKey: process.env.GROQ_API_KEY,
+    groqClaimCheckerKey: process.env.GROQ_CLAIM_STATUS_CHECKER_KEY
   });
 });
 
@@ -108,7 +109,7 @@ app.get('/config', (req, res) => {
 
 // REST calls through API Gateway
 
-const API_BASE = process.env.API_BASE_URL || "http://localhost:4566/restapis/wsbtzhpafx/dev/_user_request_";
+const API_BASE = process.env.API_BASE_URL  // || "http://localhost:4566/restapis/wsbtzhpafx/dev/_user_request_";
 
 app.get("/api/patients", async (req, res) => {
   const response = await fetch(`${API_BASE}/patients`);
